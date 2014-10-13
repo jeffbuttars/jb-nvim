@@ -2,8 +2,10 @@
 # encoding: utf-8
 # 2014-10-12 17:05:17.676061
 
+import builtins
 import subprocess
 import tempfile
+import keyword
 import msgpack
 
 
@@ -21,21 +23,34 @@ def list_hook(item):
     return [convert(x) for x in item]
 
 
+def kword(kw):
+    if kw in keyword.kwlist or kw in dir(builtins):
+        return 'v_' + kw
+    return kw
+
+
 def print_func(func):
     # print("FUNC:", func)
     # print("FUNC:", {k.decode(): v for k, v in func.items()})
 
     # func = {k.decode(): v for k, v in func.items()}
-    func['can_fail'] = func.get('can_fail', False)
     fmt = (
         "# Function: {name}\n"
         "# Parameters {parameters}\n"
         "# Returns {return_type}\n"
+        "# Recieves channel id {receives_channel_id}\n"
         "# Can fail {can_fail}\n"
         "def {name}({args}):\n"
-        "\tpass\n\n\n")
+        "    msg = [\n"
+        "        '{name}',\n"
+        "        [{args}]\n"
+        "        ]\n"
+        "    return msg"
+        "\n\n")
 
-    func['args'] = ', '.join([x[1] for x in func.get('parameters', [])])
+    func['receives_channel_id'] = func.get('receives_channel_id', False)
+    func['can_fail'] = func.get('can_fail', False)
+    func['args'] = ', '.join([kword(x[1]) for x in func.get('parameters', [])])
     func['parameters'] = ', '.join([x[0] + ': ' + x[1] for x in func.get('parameters', [])])
     print(fmt.format(**func))
 
@@ -70,13 +85,14 @@ def main():
     # for k, v in func_info.items():
     #     print("{}".format(k))
 
-    # print("As Python:", func_info)
+    print("# As Python:", func_info)
 
     # print_dict(func_info['types'], "*** Types ***")
     # print_dict(func_info['features'], "*** Features ***")
     # print_dict(func_info['error_types'], "*** Error Types ***")
     # print_dict(func_info['functions'], "*** Functions ***")
 
+    print("\n")
     for func in func_info['functions']:
         print_func(func)
 

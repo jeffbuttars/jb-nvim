@@ -1,4 +1,6 @@
 PyYAML==3.11
+greenlet==0.4.4
 msgpack-python==0.4.2
 msgpack-rpc-python==0.3.3
+neovim==0.0.22
 tornado==2.4.1
