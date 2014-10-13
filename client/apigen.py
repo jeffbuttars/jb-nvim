@@ -7,6 +7,7 @@ import subprocess
 import tempfile
 import keyword
 import msgpack
+from pprint import pformat as pf
 
 
 def convert(x):
@@ -30,37 +31,52 @@ def kword(kw):
 
 
 def print_func(func):
-    # print("FUNC:", func)
-    # print("FUNC:", {k.decode(): v for k, v in func.items()})
-
-    # func = {k.decode(): v for k, v in func.items()}
     fmt = (
-        "# Function: {name}\n"
-        "# Parameters {parameters}\n"
-        "# Returns {return_type}\n"
-        "# Recieves channel id {receives_channel_id}\n"
-        "# Can fail {can_fail}\n"
-        "def {name}({args}):\n"
-        "    msg = [\n"
-        "        '{name}',\n"
-        "        [{args}]\n"
-        "        ]\n"
-        "    return msg"
-        "\n\n")
+        "    # Function: {name}\n"
+        "    # Parameters {parameters}\n"
+        "    # Returns {return_type}\n"
+        "    # Recieves channel id {receives_channel_id}\n"
+        "    # Can fail {can_fail}\n"
+        "    def {func_name}(self, {args}):\n"
+        "        return ('{name}', [{args}])\n"
+        )
 
     func['receives_channel_id'] = func.get('receives_channel_id', False)
     func['can_fail'] = func.get('can_fail', False)
     func['args'] = ', '.join([kword(x[1]) for x in func.get('parameters', [])])
-    func['parameters'] = ', '.join([x[0] + ': ' + x[1] for x in func.get('parameters', [])])
+    func['parameters'] = ', '.join(
+        [x[0] + ': ' + x[1] for x in func.get('parameters', [])])
     print(fmt.format(**func))
 
 
-# def print_dict(d, title):
-#     print(title)
+def print_cls(cls, funcs):
+    fmt = (
+        "\n\nclass {}(object):\n"
+    )
+    print(fmt.format(cls))
 
-#     if isinstance(d, dict):
-#         for k, v in d.items():
-#             print("\t'%s': %s" % (k, v))
+    for func in funcs:
+        print_func(func)
+
+def parse_funcs(funcs):
+
+    cls_map = {}
+
+    for func in funcs:
+        fn = func['name']
+        cls, name = fn.split('_', 1)
+        cls = cls.title()
+        func['func_name'] = name
+        if cls not in cls_map:
+            cls_map[cls] = []
+
+        cls_map[cls].append(func)
+
+    for k, v in cls_map.items():
+        print_cls(k, v)
+
+    for k in cls_map:
+        print("{} = {}()".format(k.lower(), k))
 
 
 def main():
@@ -68,9 +84,6 @@ def main():
         fd = tempfile.TemporaryFile()
         with subprocess.Popen(['nvim', '--api-info'], stdout=subprocess.PIPE) as proc:
             fd.write(proc.stdout.read())
-            # print("GO: ", output.__class__)
-            # print("GO: ", output)
-        # output = subprocess.check_output(['nvim', '--api-info'])
     except subprocess.CalledProcessError:
         print("Error running nvim --api-info")
         raise
@@ -82,19 +95,8 @@ def main():
         list_hook=list_hook,
     )
 
-    # for k, v in func_info.items():
-    #     print("{}".format(k))
-
-    print("# As Python:", func_info)
-
-    # print_dict(func_info['types'], "*** Types ***")
-    # print_dict(func_info['features'], "*** Features ***")
-    # print_dict(func_info['error_types'], "*** Error Types ***")
-    # print_dict(func_info['functions'], "*** Functions ***")
-
-    print("\n")
-    for func in func_info['functions']:
-        print_func(func)
+    print("api_info =", pf(func_info))
+    parse_funcs(func_info['functions'])
 
 if __name__ == '__main__':
     main()
