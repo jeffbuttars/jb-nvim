@@ -16,14 +16,6 @@ def convert(x):
     return x
 
 
-def object_hook(obj):
-    return {convert(k): convert(v) for k, v in obj.items()}
-
-
-def list_hook(item):
-    return [convert(x) for x in item]
-
-
 def kword(kw):
     if kw in keyword.kwlist or kw in dir(builtins):
         return 'v_' + kw
@@ -51,12 +43,15 @@ def print_func(func):
 
 def print_cls(cls, funcs):
     fmt = (
-        "\n\nclass {}(object):\n"
+        "\nclass {}(object):\n\n"
+        "    def __init__(self, session):\n"
+        "        self._session = session\n"
     )
     print(fmt.format(cls))
 
     for func in funcs:
         print_func(func)
+
 
 def parse_funcs(funcs):
 
@@ -75,8 +70,11 @@ def parse_funcs(funcs):
     for k, v in cls_map.items():
         print_cls(k, v)
 
+    print("function_classes = [")
     for k in cls_map:
-        print("{} = {}()".format(k.lower(), k))
+        print("    '{}': {},".format(k.lower(), k))
+    print("]")
+
 
 
 def main():
@@ -91,8 +89,8 @@ def main():
     fd.seek(0)
     func_info = msgpack.unpackb(
         fd.read(), encoding='utf-8',
-        object_hook=object_hook,
-        list_hook=list_hook,
+        object_hook=lambda obj: {convert(k): convert(v) for k, v in obj.items()},
+        list_hook=lambda item: [convert(x) for x in item],
     )
 
     print("api_info =", pf(func_info))
