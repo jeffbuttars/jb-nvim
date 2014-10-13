@@ -1,0 +1,4 @@
+PyYAML==3.11
+msgpack-python==0.4.2
+msgpack-rpc-python==0.3.3
+tornado==2.4.1
