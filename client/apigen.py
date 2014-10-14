@@ -30,7 +30,7 @@ def print_func(func):
         "    # Recieves channel id {receives_channel_id}\n"
         "    # Can fail {can_fail}\n"
         "    def {func_name}(self, {args}):\n"
-        "        return ('{name}', [{args}])\n"
+        "        return self.send_sync(ReqMsg('{name}', *[{args}]))\n"
         )
 
     func['receives_channel_id'] = func.get('receives_channel_id', False)
@@ -43,7 +43,7 @@ def print_func(func):
 
 def print_cls(cls, funcs):
     fmt = (
-        "\nclass {}(object):\n\n"
+        "\nclass {}(Cmd):\n\n"
         "    def __init__(self, session):\n"
         "        self._session = session\n"
     )
@@ -70,11 +70,10 @@ def parse_funcs(funcs):
     for k, v in cls_map.items():
         print_cls(k, v)
 
-    print("function_classes = [")
+    print("function_classes = {")
     for k in cls_map:
         print("    '{}': {},".format(k.lower(), k))
-    print("]")
-
+    print("}\n")
 
 
 def main():
@@ -93,7 +92,9 @@ def main():
         list_hook=lambda item: [convert(x) for x in item],
     )
 
-    print("api_info =", pf(func_info))
+    # print("api_info =", pf(func_info))
+    print("from msg import ReqMsg")
+    print("from cmds import Cmd\n")
     parse_funcs(func_info['functions'])
 
 if __name__ == '__main__':

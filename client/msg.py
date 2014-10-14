@@ -29,6 +29,9 @@ class Msg(object):
 
     @classmethod
     def unpack(cls, data):
+        if not data:
+            return None    
+
         msg_data = data_unpack(data)
 
         if len(msg_data) == 4:
@@ -56,6 +59,11 @@ class Msg(object):
             self.params
         ])
 
+    def __str__(self):
+        return "type: {}, method: {}, params: {}".format(
+            self._mtype, self.method, self.params
+        )
+
 
 class ReqMsg(Msg):
     def __init__(self, method, *params):
@@ -72,6 +80,11 @@ class RespMsg(Msg):
 
     def pack(self):
         raise NotImplementedError
+
+    def __str__(self):
+        return "type: {}, error: {}, result: {}".format(
+            self._mtype, self.error, self.result
+        )
 
 
 class Notification(Msg):
