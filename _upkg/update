@@ -5,13 +5,15 @@ source pkgs.sh
 # Make sure we have an undos directory
 mkdir -p ~/.nvim/undos
 
-# pr_info "Updating bundles..."
-# echo "y\ny\ny\n" | nvim +'NeoBundleCheck<\CR>' +'q'
-# wait
+pr_info "Updating bundles..."
+echo "y\ny\ny\n" | nvim +'NeoBundleCheck<\CR>' +'q'
+wait
 
-# source buildycm.sh
+source buildycm.sh
 
-# pr_info "Building vimproc .so..."
-# cd ~/.nvim/bundle/vimproc
-# make
-# cd -
+if [[ -d  ~/.nvim/bundle/vimproc ]]; then
+    pr_info "Building vimproc .so..."
+    cd ~/.nvim/bundle/vimproc
+    make
+    cd -
+fi
