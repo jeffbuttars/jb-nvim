@@ -6,56 +6,21 @@
 "
 " To use this .nvimrc copy it to :  
 "
-" * On Linux, OS X, Unix and OS/2:  ~/.nvimrc  
-" *	On Amiga:  s:.nvimrc  
-" * On MS-DOS and Win32:  $VIM\_nvimrc  
-" * On OpenVMS:  sys$login:.nvimrc  
-"
-" ## Original Maintainer:	Bram Moolenaar <Bram@nvim.org>  
-" Bram wrote/writes Vim, send money to his charity for Uganda. 
-" Find more info at [Vim.org](http://www.nvim.org)  
-"
-" __If your reading this as a README on GitHub you should know that this 
-" README is generted from the .nvimrc file of this project using [Vimdown](https://github.com/jeffbuttars/Vimdown)__  
-"
-" After each code block I will try to put some links to the appropriate vimdoc
-" pages for the Vim features used in the section. This is a large .nvimrc file
-" and I have yet to tame it. So it's not in a great order, a work in progress.
-" 
-" ## .nvimrc sections:
-" * [Bundles](#bundles)
-" * [Maps](#maps)
 "
 " Load our bundles early
-runtime nvimrc/nerdcomment.vim
-runtime nvimrc/bundles.vim
+" runtime nvimrc/nerdcomment.vim
+" runtime nvimrc/bundles.vim
 
 "
 " ### Vim Options
 "
-" When started as "evim", evim.vim will already have done these settings, so
-" we'll bail out in that scenario
-if v:progname =~? "evim"
-  finish
-endif
-" * [evim][]
-" * [finish][]
-"
-" Use Vim settings, rather then Vi settings (much better!).
-" This must be first, because it changes other options as a side effect.
-set nocompatible " Don't be compatible with basic Vi
 
 set backspace=indent,eol,start " allow backspacing over everything in insert mode
 
 set history=1000 " keep 1000 lines of command line history
 "
-" * [nocompatible][]
-" * [backspace][]
-" * [nobackup][]
-" * [history][]
-"
-" Set our encoding to UTF-8
-set encoding=utf-8
+" Set our encoding to UTF-8, but UTF-8 is default in Neo Vim
+" set encoding=utf-8
 
 " ### Ruler and Statusline
 " 
@@ -73,9 +38,6 @@ set encoding=utf-8
   " or
   " set statusline=%<%y\ b%n\ %h%m%r%=%-14.(%l,%c%V%)\ %{&textwidth}\ %P
 "
-" * [ruler][]
-" * [statusline][]
-"
 " Set up some buffer and window behaviors
 filetype on
 set switchbuf=useopen
@@ -88,36 +50,23 @@ set lazyredraw      " Don't redraw screen when executing macros
 " * [showcmd][]
 "  
 "
-" If we're running Vim 7.3 or newer, enable persistent undo
-" and tell vim were to store the undo files. 
-if version >= 703
-	set undofile
-	set undodir=~/.nvim/undos
-    set undolevels=1000
-    set undoreload=10000
-endif
-"
-" * [undofile][]
-" * [undodir][]
-"  
-"
+set undofile
+set undodir=~/.nvim/undos
+set undolevels=1000
+set undoreload=10000
+
+
 " In many terminal emulators the mouse works just fine, thus enable it.
 if has('mouse')
   set mouse=a
 endif
-"
-" * [mouse][]
-"
 
-" Switch on highlighting of the last used search pattern.
+" Switch on highlighting of the last used search pattern if we have more than 2
+" colors available
 if &t_Co > 2
 	set hlsearch
 endif
 
-"  
-" * [hlsearch][]
-" * [guioptions][]
-"
 "
 " __I don't use the following, but some like it so I included for FYI purposes:__  
 "
@@ -127,16 +76,11 @@ endif
    " set list  
    " set listchars=tab:\|.,trail:.,extends:#,nbsp:.
 " 
-" * [listchars][]
-"
 " 
-" We take for granted that we are connected to a fast terminal most of the time
+" Let's take for granted that we are connected to a fast terminal most of the time
 set ttyfast
 set laststatus=2 " keep the status line showing
 set incsearch    " Enable incremental searching
-" * [ttyfast][]
-" * [laststatus][]
-" * [incsearch][]
 "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "
@@ -346,52 +290,15 @@ set viewoptions=cursor
 set sessionoptions=winpos,localoptions
 
 " See if we can speed things up with 
-" lazyredraw and ttyfast
+" lazyredraw and ttyfast. In Neo Vim, ttyfast defaults to 'on'
 set lazyredraw
-set ttyfast
+" set ttyfast
 
 " Make sure I get the expected behavior from ctrl-]
 " if cscopetag is set, ctrl-] will try to be too smart
 set nocscopetag
 set tags=tags,./tags;/
 
+" Source our extra runtime files that are broken out into more specific file
+" configs
 runtime! nvimrc/*.nvim
-
-" [evim]: http://vimdoc.sourceforge.net/htmldoc/starting.html#evim
-" [nocompatible]: http://vimdoc.sourceforge.net/htmldoc/options.html#'nocompatible'
-" [backspace]: http://vimdoc.sourceforge.net/htmldoc/options.html#'backspace'
-" [nobackup]: http://vimdoc.sourceforge.net/htmldoc/options.html#'nobackup'
-" [history]: http://vimdoc.sourceforge.net/htmldoc/options.html#'history'
-" [ruler]: http://vimdoc.sourceforge.net/htmldoc/options.html#'ruler'
-" [statusline]: http://vimdoc.sourceforge.net/htmldoc/options.html#'statusline'
-" [guioptions]: http://vimdoc.sourceforge.net/htmldoc/options.html#'guioptions'
-" [switchbuf]: http://vimdoc.sourceforge.net/htmldoc/options.html#'switchbuf'
-" [laststatus]: http://vimdoc.sourceforge.net/htmldoc/options.html#'laststatus'
-" [showcmd]: http://vimdoc.sourceforge.net/htmldoc/options.html#'showcmd'
-" [undofile]: http://vimdoc.sourceforge.net/htmldoc/options.html#'undofile'
-" [undodir]: http://vimdoc.sourceforge.net/htmldoc/options.html#'undodir'
-" [mouse]: http://vimdoc.sourceforge.net/htmldoc/options.html#'mouse'
-" [syntax]: http://vimdoc.sourceforge.net/htmldoc/options.html#'syntax'
-" [hlsearch]: http://vimdoc.sourceforge.net/htmldoc/options.html#'hlsearch'
-" [listchars]: http://vimdoc.sourceforge.net/htmldoc/options.html#'listchars'
-" [ttyfast]: http://vimdoc.sourceforge.net/htmldoc/options.html#'ttyfast'
-" [incsearch]: http://vimdoc.sourceforge.net/htmldoc/options.html#'incsearch'
-" [autoindent]: http://vimdoc.sourceforge.net/htmldoc/options.html#'autoindent'
-" [autoread]: http://vimdoc.sourceforge.net/htmldoc/options.html#'autoread'
-" [completeopt]: http://vimdoc.sourceforge.net/htmldoc/options.html#'completeopt'
-" [complete]: http://vimdoc.sourceforge.net/htmldoc/options.html#'complete'
-" [number]: http://vimdoc.sourceforge.net/htmldoc/options.html#'number'
-" [relativenumber]: http://vimdoc.sourceforge.net/htmldoc/options.html#'relativenumber'
-" 
-" [pumvisible]: http://vimdoc.sourceforge.net/htmldoc/eval.html#pumvisible()
-"
-" [map]: http://vimdoc.sourceforge.net/htmldoc/map.html#:map
-" [inoremap]: http://vimdoc.sourceforge.net/htmldoc/map.html#:inoremap
-" [imap]: http://vimdoc.sourceforge.net/htmldoc/map.html#:imap
-" [nmap]: http://vimdoc.sourceforge.net/htmldoc/map.html#:nmap
-"
-" [autocommands]: http://vimdoc.sourceforge.net/htmldoc/autocmd.html#autocommand
-"
-" [runtime]: http://vimdoc.sourceforge.net/htmldoc/repeat.html#:runtime
-" [finish]: http://vimdoc.sourceforge.net/htmldoc/repeat.html#:finish
-
