@@ -9,7 +9,7 @@
 "
 " Load our bundles early
 " runtime nvimrc/nerdcomment.vim
-" runtime nvimrc/bundles.vim
+runtime nvimrc/bundles.vim
 
 "
 " ### Vim Options
