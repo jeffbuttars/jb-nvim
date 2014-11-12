@@ -9,6 +9,10 @@ mkdir -p ~/.nvim/bundle
 if [[ ! -d  ~/.nvim/bundle/neobundle.vim ]]; then
     pr_info "Installing neobundle."
     git clone git://github.com/Shougo/neobundle.vim ~/.nvim/bundle/neobundle.vim
+else
+    cd ~/.nvim/bundle/neobundle.vim
+    git pull --force
+    cd -
 fi
 
 export THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -31,9 +35,11 @@ wait
 
 # source buildycm.sh
 
-pr_info "Building vimproc .so..."
-cd ~/.nvim/bundle/vimproc
-make
-cd -
+if [[ -d  ~/.nvim/bundle/vimproc ]]; then
+    pr_info "Building vimproc .so..."
+    cd ~/.nvim/bundle/vimproc
+    make
+    cd -
+fi
 
 pr_pass "Install complete"
