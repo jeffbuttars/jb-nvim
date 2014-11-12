@@ -8,7 +8,7 @@
 "
 "
 " Load our bundles early
-" runtime nvimrc/nerdcomment.vim
+runtime nvimrc/nerdcomment.vim
 runtime nvimrc/bundles.vim
 
 "
@@ -20,7 +20,7 @@ set backspace=indent,eol,start " allow backspacing over everything in insert mod
 set history=1000 " keep 1000 lines of command line history
 "
 " Set our encoding to UTF-8, but UTF-8 is default in Neo Vim
-" set encoding=utf-8
+set encoding=utf-8
 
 " ### Ruler and Statusline
 " 
